@@ -71,7 +71,7 @@
 						<configuration>
 							<srcFiles>
 								<srcFile>
-									${basedir}/db/sql/dropTable_h2.sql
+									${basedir}/dbsql/dropTable_h2.sql
 								</srcFile>
 							</srcFiles>
 							<onError>continue</onError>
@@ -87,7 +87,7 @@
 						<configuration>
 							<srcFiles>
 								<srcFile>
-									${basedir}/db/sql/createTable_h2.sql
+									${basedir}/dbsql/createTable_h2.sql
 								</srcFile>
 							</srcFiles>
 							<onError>continue</onError>
