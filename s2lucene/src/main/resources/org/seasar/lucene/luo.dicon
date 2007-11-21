@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components namespace="luo" >
+	<include path="org/seasar/lucene/luo-base.dicon"/>
+		
+	<component name="interceptor" class="org.seasar.lucene.interceptor.S2LuceneInterceptor">
+		<property name="directoryAccessor">directory</property>
+		<property name="createMethodSuffix">"create"</property>
+		<property name="updateMethodSuffix">"update"</property>
+		<property name="deleteMethodSuffix">"delete"</property>
+		<property name="searchMethodSuffix">"search"</property>
+	</component>
+
+	<!-- Analyzer Factory -->
+	<component name="analyzerFactory" class="org.seasar.lucene.analyzer.impl.AnalyzerFactoryImpl">
+		<property name="japaneseAnalyzer">japaneseAnalyzer</property>
+		<property name="cjkAnalyzer">cjkAnalyzer</property>
+		<property name="standardAnalyzer">standardAnalyzer</property>
+	</component>
+
+	<!-- DocumentDelete -->
+	<component name="deleteOperation" class="org.seasar.lucene.operation.impl.DeleteDocumentOperationImpl">
+		<property name="directoryAccessor">directory</property>
+	</component>
+
+	<!-- DocumentWrite -->
+	<component name="writeOperation" class="org.seasar.lucene.operation.impl.WriteDocumentOperationImpl">
+		<property name="directoryAccessor">directory</property>
+		<property name="analyzerFactory">analyzerFactory</property>
+	</component>
+
+	<!-- DocumentSearch -->
+	<component name="searchOperation" class="org.seasar.lucene.operation.impl.SearchDocumentOperationImpl">
+		<property name="directoryAccessor">directory</property>
+		<property name="analyzerFactory">analyzerFactory</property>
+	</component>
+
+</components>
