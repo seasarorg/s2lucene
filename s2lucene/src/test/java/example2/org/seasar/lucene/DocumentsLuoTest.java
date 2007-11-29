@@ -44,9 +44,12 @@ public class DocumentsLuoTest {
 	 */
 	@Before
 	public void inithializeIndex() {
-		System.out.println(indexPath);
+		File indexDir = new File(indexPath);
 		try {
-			FileUtils.cleanDirectory(new File(indexPath));
+			FileUtils.cleanDirectory(indexDir);
+		} catch (IllegalArgumentException e) {
+			System.out.println("Index用ディレクトリを作成します。");
+			indexDir.mkdirs();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

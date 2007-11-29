@@ -1,0 +1,165 @@
+
+■[seasar][REST]S2REST(仮)をseasarのsandboxへ申請したいと考えています このエントリーを含むブックマーク このエントリーのブックマークコメントCommentsAdd Star
+
+JSR311はJavaでRESTfulなサービスを作るための仕様案です。yone098さんもJSR311に興味を持っているみたいですね。
+
+意外とまだ変更が多いJSR311
+
+実は、JSR311のアノテーションは、trunkではもう変わっているんです。
+
+https://jsr311.dev.java.net/svn/jsr311/trunk/src/jsr311-api/src
+
+具体的には、UriTemplateとUriParamとHttpMethodの各アノテーションが無くなったり(!)、使い方が変わったりしています(「Path系」に変わっています。詳しくは、このエントリのコードサンプルのところをご覧ください)。
+
+ここ何ヶ月かJSR311のtrunkを追っているのですが、結構変わります。そういうきっかけもあり、このエントリを書いています。
+
+RESTful-Dao/RESTful-Buriの再構築
+
+RESTful-DaoやRESTful-Buriと呼んでいたものを、いま、Seasarプロジェクトの下でオープンソースにしたいと考えています。
+
+RESTful-Buriをお披露目したのは前々回のSeasarCon、Seasar Conference 2007 Springでした。それからもぶり祭りなどのイベントに合わせて(イベントドリブン)開発をしてきたのですが、特殊な規約ベースのライブラリ設計に少し限界を感じていました。これは私の設計の問題ですが、制約が強く、汎用ライブラリと言うよりもアプリケーションという側面が強かったのです。突貫部分で作ったコードもテストしにくい設計になってしまっていました。
+
+また、今年初夏にRESTful Web Servicesを読んだのも影響があったと思います。
+
+このためライブラリのコアの部分をアーキテクチャから設計し直してコードをゼロから書き直す決断をし、少しずつコードを書いていました。
+Restful Web Services
+
+Restful Web Services
+
+    * 作者: Leonard Richardson, Sam Ruby
+    * 出版社/メーカー: Oreilly & Associates Inc
+    * 発売日: 2007/05
+    * メディア: ペーパーバック
+
+コードを書き直す際には、Routerの独自実装をやめ、Restletと呼ばれるRESTフレームワークをベースにしました。
+
+Restletのアーキテクチャは、まさにRoyFのREST論文の内容をJavaで実装しましたという感じになっており、正直その頑固さに感心しました。これも一種のopinionated softwareといえるでしょう。また、RestletにはURI-TemplatesのJava版実装をベースにしたRouterがあり、URIへのマッピング機能が強力です。
+
+再設計の結果アノテーションベースの設計に変更し、実装をしていましたが、そのうちJSR311のアノテーションと大きくは違わない形になってきました。ではいっそJSR311の実装にしてしまおうかと考え、JSR311のSeasar版実装(というかSeasar版アダプタ)を開始し、現在に至ります。
+
+機能としてはJSR311のアノテーションをクラスやインターフェイスに付けることによって、アノテーションの付いたメソッドをリソースとして認識し、URL経由でアクセスできるようになるというものです。
+
+つまり、Daoのインターフェイスにアノテーションを付ければRESTful-Dao相当のものになり、Baoのインターフェイスにアノテーションを付ければRESTful-Buriのサーバサイドの基盤部分になるわけです(RESTful-BuriのUIはS2RESTをつかったアプリケーションという位置づけになるでしょう)。
+
+また、URIマッピングは、SeasarのSMART deployとAutoRegisterで自動的に行います。
+
+コードサンプル
+
+たとえば最小限の記述を行うと、次のようになります。
+
+package com.example.service;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.ProduceMime;
+
+import com.example.entity.Employee;
+
+@Path("employeeService/{empId}")
+@ProduceMime({"application/json","application/atom+xml"})
+public interface Jsr311EmployeeService {
+    
+    @GET
+    public Employee findById(@PathParam("empId") long id);
+    //引数へアノテーションをつけて、URIの変数部とのマッピングを行っている
+}
+
+S2Daoに付けると、以下のような感じになります。(S2DaoのArgumentsアノテーションとJSR311のPathParamアノテーションの二つがついてDRYではないですが…)
+
+package com.example.dao;
+
+import java.util.List;
+
+import javax.ws.rs.ConsumeMime;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.ProduceMime;
+
+import org.seasar.dao.annotation.tiger.Arguments;
+import org.seasar.dao.annotation.tiger.S2Dao;
+
+import com.example.entity.Employee;
+
+@Path("employee")
+@ConsumeMime({"application/json","application/x-www-form-urlencoded"})
+@ProduceMime({"application/json","text/xml"})
+@S2Dao(bean = Employee.class)
+public interface Jsr311EmployeeDao {
+    
+    @GET
+    @Path("list")
+    @ProduceMime({"application/json","application/atom+xml"})
+    public List<Employee> getAll();
+    
+    @GET
+    @Path("{empId}")
+    @Arguments("employeeId")
+    public Employee getById(@PathParam("empId") long id);
+    //(注意) ArgumentsはS2Daoのアノテーション
+    
+    @POST
+    @Path("list")
+    public void insert(Employee employee);
+    
+    @PUT
+    @Path("{empId}")
+    public void update(Employee employee);
+    
+    @DELETE
+    @Path("{empId}")
+    public void delete(Employee employee);
+}
+
+
+上記のDaoにHTTP GETアクセスしてみましょう
+
+$ curl -i -X GET http://localhost:8020/s2-rest-spike/employee/2
+HTTP/1.1 200 OK
+Date: Thu, 29 Nov 2007 02:38:50 GMT
+Server: Noelios-Restlet-Engine/1.0.6
+Content-Type: application/json; charset=UTF-8
+Content-Length: 40
+Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept
+
+{"employeeName":"fowler","employeeId":2}
+$ 
+
+$ curl -i -X GET http://localhost:8020/s2-rest-spike/employee/list
+HTTP/1.1 200 OK
+Date: Thu, 29 Nov 2007 02:40:50 GMT
+Server: Noelios-Restlet-Engine/1.0.6
+Content-Type: application/json; charset=UTF-8
+Content-Length: 81
+Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept
+
+[{"employeeName":"kent","employeeId":1},{"employeeName":"fowler","employeeId":2}]
+$ 
+
+
+メソッドの戻り値のRepresentationへの変換については、以下の順番で見つかったものを呼び出そうと考えています
+
+   1. 戻り値が既にRepresentationに近い形式の場合(JSONObjectなど)にはそれを流用する
+   2. javax.ws.rs.ext.MessageBodyWriter<T>の自動解決/変換
+   3. ProduceMimeによる暗黙の変換
+
+
+
+JSR311については、詳しくは、以下のサイトを見てみてください。
+
+http://jcp.org/en/jsr/detail?id=311
+
+と、いうことで、これから申請したいと思います申請させていただきました。
+
+興味のある人はぜひコミッタになってください。yone098さんもぜひ。
+コメントを書く
+
+higayasuohigayasuo 2007/11/29 11:35 おいらもコミッタになる。
+もともと、SAStrutsの後は、S2RESTをやるつもりだったから。
+
+t-wadat-wada 2007/11/29 12:07 ひがさんキター!
+ぜひ、お願いします。

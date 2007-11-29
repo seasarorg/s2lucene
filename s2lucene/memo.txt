@@ -1,0 +1,19 @@
+2007.05.30 Wednesday
+IndexWriterのautoCommitパラメータ
+これはまだtrunkバージョンの話だが、IndexWriterにautoCommitモードなるものが追加された。
+
+autoCommitはtrue|falseのどちらかをIndexWriterを作成するときのコンストラクタで指定する。
+デフォルトはtrueでLucene 2.1以前の動作と同じとなる。
+
+ここでいうコミットとは、segments_Nファイルを書き込んでセグメントを確定させることを指す。
+
+Lucene 2.0以前ではsetMaxBufferedDocs()（デフォルトは10）で指定したドキュメント数に達したときにメモリからインデックスにドキュメントが書き出されてsegments（当時は"_N"はつかなかった）にも反映されたので、この時点でIndexReaderをオープンすれば、インデックスに書き出されたドキュメントは検索にも反映された。
+
+Lucene 2.1では、IndexWriterにflush()というメソッドが追加され、これはsetMaxBufferedDocs()にドキュメント数が達しない場合でも、flush()により強制的にメモリからインデックスにドキュメントを書き出させるものである。これにより、書き出しのタイミングコントロールがプログラムからできるようになった。
+
+trunkバージョンではさらにautoCommit=falseを指定することができるようになり、
+この場合、メモリからインデックスにドキュメントが書き出されてもsegments_Nを書き換えない。
+そうすることによりIndexReaderにはコミット前の古いセグメントを見せることができる。
+そしてautoCommit=falseを指定した場合に限り、IndexWriterをclose()またはabort()することを選択できる。 
+close()はもちろん、IndexWriterを閉じてaddDocument()を確定させる（従来どおり）。
+abort()はやはりtrunk バージョンで加わったメソッドで、これを呼ぶとそれまでのaddDocument()はすべて破棄され、セグメントは古いままで更新されない。 

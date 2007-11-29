@@ -3,8 +3,14 @@ package example.org.seasar.lucene;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -26,6 +32,10 @@ public class BooksLuoTest {
 
 	String indexPath = System.getProperty("user.dir") + "\\" + "index";
 
+	String textPath = System.getProperty("user.dir") + "\\" + "text";
+
+	String encoding = "UTF-8";
+
 	private BooksDto createDto(long id, String name) {
 		BooksDto dto = null;
 		dto = new BooksDto();
@@ -39,9 +49,12 @@ public class BooksLuoTest {
 	 */
 	@Before
 	public void inithializeIndex() {
-		System.out.println(indexPath);
+		File indexDir = new File(indexPath);
 		try {
-			FileUtils.cleanDirectory(new File(indexPath));
+			FileUtils.cleanDirectory(indexDir);
+		} catch (IllegalArgumentException e) {
+			System.out.println("Index用ディレクトリを作成します。");
+			indexDir.mkdirs();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -153,6 +166,60 @@ public class BooksLuoTest {
 		booksLuo.deleteIndex(createDto(7, "S2Flex2入門"));
 		List<BooksDto> resultAfter = booksLuo.searchById("7");
 		assertEquals(0, resultAfter.size());
+	}
+
+	@Test
+	public void createIndexAndSearchJpTest() {
+		long start = 0;
+		long stop = 0;
+		List<String> result = testRead();
+		long id = 1;
+		//
+		start = System.currentTimeMillis();
+		for (int i = 0; i < result.size(); i++) {
+			String name = result.get(i);
+			booksLuo.createIndex(createDto(id, name));
+			id = id + 1;
+		}
+		stop = System.currentTimeMillis();
+		System.out.println(stop - start);
+		//
+		start = System.currentTimeMillis();
+		List<BooksDto> resultSearch = booksLuo.searchByName("ライブラリ");
+		for (int i = 0; i < resultSearch.size(); i++) {
+			String dtoStr = resultSearch.get(i).toString();
+			System.out.println(dtoStr);
+		}
+		stop = System.currentTimeMillis();
+		System.out.println(stop - start);
+	}
+
+	private List<String> testRead() {
+		String testFile = textPath + "\\" + "test.txt";
+		FileInputStream fis = null;
+		InputStreamReader isr = null;
+		BufferedReader bReader = null;
+		try {
+			fis = new FileInputStream(testFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			isr = new InputStreamReader(fis, encoding);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		bReader = new BufferedReader(isr);
+		List<String> result = new ArrayList<String>();
+		String resultStr = null;
+		try {
+			while (!((resultStr = bReader.readLine()) == null)) {
+				result.add(resultStr);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
