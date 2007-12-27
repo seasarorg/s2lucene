@@ -1,5 +1,6 @@
 package org.seasar.lucene.jdbc;
 
+import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -10,8 +11,7 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.store.Directory;
+import org.apache.lucene.index.IndexWriter;
 
 public class LuceneConnection implements java.sql.Connection {
 
@@ -19,23 +19,45 @@ public class LuceneConnection implements java.sql.Connection {
 
 	private boolean mode;
 
+	private IndexWriter indexWriter;
+
 	public LuceneConnection(String url, Properties info) {
 		this.url = url;
 	}
 
-	public void createIndexWriter(Directory d, Analyzer a) {
+	public void setIndexWriter(IndexWriter indexWriter) {
+		this.indexWriter = indexWriter;
+	}
+
+	public IndexWriter getIndexWriter() {
+		return this.indexWriter;
 	}
 
 	public void close() throws SQLException {
 		System.out.println("Lucene Connection is Closed.");
+		try {
+			indexWriter.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void commit() throws SQLException {
 		System.out.println("Lucene Connection is Commit.");
+		try {
+			indexWriter.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void rollback() throws SQLException {
 		System.out.println("Lucene Connection is RollBack.");
+		try {
+			indexWriter.abort();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/*----------------------------------------------------------------------------------------------------------*/

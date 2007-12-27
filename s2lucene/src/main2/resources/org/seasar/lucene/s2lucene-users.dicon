@@ -15,5 +15,9 @@
 	<component name="deleteCommandSuffix" class="java.lang.String">
 		<arg>"delete"</arg>
 	</component>
+
+	<component name="basePath">"C:\\java\\eclipse\\3.3.1.1\\workspace\\s2lucene"</component>
+	<component name="indexpath">basePath + "\\index"</component>
+	<component name="senConfPath">basePath + "\\sen\\conf\\sen.xml"</component>
 	
 </components>

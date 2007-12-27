@@ -43,6 +43,35 @@
 	<component name="deleteCommandImpl" class="org.seasar.lucene.command.impl.DeleteCommandImpl">
 	</component>
 
+	<component name="analyzerFactory" class="org.seasar.lucene.analyzer.impl.AnalyzerFactoryImpl">
+		<property name="cjkAnalyzer">cjkAnalyzer</property>
+		<property name="japaneseAnalyzer">japaneseAnalyzer</property>
+		<property name="simpleAnalyzer">simpleAnalyzer</property>
+		<property name="standardAnalyzer">standardAnalyzer</property>
+		<property name="dummyAnalyzer">dummyAnalyzer</property>
+	</component>
+
+	<!-- JapaneseAnalyzer -->
+	<component name="japaneseAnalyzer" class="org.apache.lucene.analysis.ja.JapaneseAnalyzer">
+		<arg>senConfPath</arg>
+	</component>
+
+	<!-- CJKAnalyzer -->
+	<component name="cjkAnalyzer" class="org.apache.lucene.analysis.cjk.CJKAnalyzer">
+	</component>
+	
+	<!-- StandardAnalyzer -->
+	<component name="standardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+	</component>
+
+	<!-- SimpleAnalyzer -->
+	<component name="simpleAnalyzer" class="org.apache.lucene.analysis.SimpleAnalyzer">
+	</component>
+
+	<!-- DummyAnalyzer -->
+	<component name="dummyAnalyzer" class="org.seasar.lucene.analyzer.impl.DummyAnalyzerImpl">
+	</component>
+
 	<component name="indexWriterUtil" class="org.seasar.lucene.util.impl.IndexWriterUtilImpl">
 	</component>
 	<component name="indexSearcherUtil" class="org.seasar.lucene.util.impl.IndexSearcherUtilImpl">
