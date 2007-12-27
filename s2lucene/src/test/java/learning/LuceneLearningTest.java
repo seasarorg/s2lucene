@@ -177,7 +177,7 @@ public class LuceneLearningTest {
 		try {
 			writer.abort();
 		} catch (IOException e) {
-			throw new RuntimeException("close IOException", e);
+			throw new RuntimeException("abort IOException", e);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class LuceneLearningTest {
 		try {
 			writer.flush();
 		} catch (IOException e) {
-			throw new RuntimeException("close IOException", e);
+			throw new RuntimeException("flush IOException", e);
 		}
 	}
 
