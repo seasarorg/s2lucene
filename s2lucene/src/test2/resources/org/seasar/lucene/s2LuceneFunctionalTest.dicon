@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components>
+	<include path="j2ee.dicon"/>
+	<include path="jdbc.dicon"/>
+	<include path="org/seasar/lucene/s2lucene.dicon"/>
+	
+	<component name="documentLuo" class="org.seasar.lucene.DocumentLuo">
+		<aspect>j2ee.requiredTx</aspect>
+		<aspect>lucene.interceptor</aspect>
+	</component>
+	
+	
+</components>

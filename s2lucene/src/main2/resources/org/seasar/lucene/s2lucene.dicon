@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components namespace="lucene" >
+	<include path="org/seasar/lucene/s2lucene-jdbc.dicon"/>
+	<include path="org/seasar/lucene/s2lucene-users.dicon"/>
+
+	<component name="interceptor" class="org.seasar.lucene.interceptor.S2LuceneInterceptor">
+		<property name="luceneMetaDataFactory">luceneMetaDataFactory</property>
+	</component>
+
+	<component name="luceneMetaDataFactory" class="org.seasar.lucene.meta.impl.LuceneMetaDataFactoryImpl">
+	</component>
+
+	<component name="luceneFunctionMetaDataFactory" class="org.seasar.lucene.meta.impl.LuceneFunctionMetaDataFactoryImpl">
+	</component>
+
+	<component name="luceneCommandFactory" class="org.seasar.lucene.command.impl.LuceneCommandFactoryImpl">
+		<initMethod name="addCommand" >
+			<arg>searchCommandImpl</arg>
+		</initMethod>
+		<initMethod name="addCommand" >
+			<arg>createCommandImpl</arg>
+		</initMethod>
+		<initMethod name="addCommand" >
+			<arg>updateCommandImpl</arg>
+		</initMethod>
+		<initMethod name="addCommand" >
+			<arg>deleteCommandImpl</arg>
+		</initMethod>
+		<property name="searchCommandTypeSuffix">searchCommandSuffix</property>
+		<property name="createCommandTypeSuffix">createCommandSuffix</property>
+		<property name="updateCommandTypeSuffix">updateCommandSuffix</property>
+		<property name="deleteCommandTypeSuffix">deleteCommandSuffix</property>
+	</component>
+
+	<component name="searchCommandImpl" class="org.seasar.lucene.command.impl.SearchCommandImpl">
+	</component>
+	<component name="createCommandImpl" class="org.seasar.lucene.command.impl.CreateCommandImpl">
+	</component>
+	<component name="updateCommandImpl" class="org.seasar.lucene.command.impl.UpdateCommandImpl">
+	</component>
+	<component name="deleteCommandImpl" class="org.seasar.lucene.command.impl.DeleteCommandImpl">
+	</component>
+
+	<component name="indexWriterUtil" class="org.seasar.lucene.util.impl.IndexWriterUtilImpl">
+	</component>
+	<component name="indexSearcherUtil" class="org.seasar.lucene.util.impl.IndexSearcherUtilImpl">
+	</component>
+
+	<component name="classUtil" class="org.seasar.lucene.common.util.impl.ClassUtilImpl">
+	</component>
+
+</components>

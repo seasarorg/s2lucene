@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE components PUBLIC "-//SEASAR//DTD S2Container 2.4//EN"
+	"http://www.seasar.org/dtd/components24.dtd">
+<components>
+
+	<component name="searchCommandSuffix" class="java.lang.String">
+		<arg>"search"</arg>
+	</component>
+	<component name="createCommandSuffix" class="java.lang.String">
+		<arg>"create"</arg>
+	</component>
+	<component name="updateCommandSuffix" class="java.lang.String">
+		<arg>"update"</arg>
+	</component>
+	<component name="deleteCommandSuffix" class="java.lang.String">
+		<arg>"delete"</arg>
+	</component>
+	
+</components>
