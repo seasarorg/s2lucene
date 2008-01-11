@@ -12,6 +12,14 @@
 
 	<repositories>
 		<repository>
+			<id>snapshot.people.apache.org</id>
+			<name></name>
+			<url>http://people.apache.org/maven-snapshot-repository</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
 			<id>seasar.org</id>
 			<name>The Seasar Project Maven2 Repository</name>
 			<url>http://maven.seasar.org/maven2</url>
@@ -96,6 +104,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -126,6 +135,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 		</plugins>
 		<defaultGoal>verify</defaultGoal>
 		<outputDirectory>target/classes</outputDirectory>
@@ -134,9 +144,11 @@
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
+			<!--
 			<resource>
 				<directory>src/main2/resources</directory>
 			</resource>
+			-->
 		</resources>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
@@ -144,9 +156,11 @@
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
+			<!--
 			<testResource>
 				<directory>src/test2/resources</directory>
 			</testResource>
+			-->
 		</testResources>
 	</build>
 
@@ -154,7 +168,13 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>2.3-dev</version>
+			<version>2.3-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
+			<version>2.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -263,7 +283,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
+			<version>4.3.1</version>
 			<scope>test</scope>
 		</dependency>
 

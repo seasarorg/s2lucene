@@ -7,21 +7,16 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.seasar.framework.container.annotation.tiger.Binding;
-import org.seasar.framework.container.annotation.tiger.BindingType;
 import org.seasar.lucene.analyzer.AnalyzerFactory;
 import org.seasar.lucene.metadata.LuceneDtoMetaData;
 
 public class AnalyzerFactoryImpl implements AnalyzerFactory {
 
-	@Binding(bindingType = BindingType.MUST)
-	public JapaneseAnalyzer japaneseAnalyzer;
+	private JapaneseAnalyzer japaneseAnalyzer;
 
-	@Binding(bindingType = BindingType.MUST)
-	public CJKAnalyzer cjkAnalyzer;
+	private CJKAnalyzer cjkAnalyzer;
 
-	@Binding(bindingType = BindingType.MUST)
-	public StandardAnalyzer standardAnalyzer;
+	private StandardAnalyzer standardAnalyzer;
 
 	public Analyzer createAnalyzer(List<LuceneDtoMetaData> metaDatas) {
 		PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(japaneseAnalyzer);
@@ -43,6 +38,30 @@ public class AnalyzerFactoryImpl implements AnalyzerFactory {
 
 	private boolean isCJKType(String type) {
 		return type.equals("CJK");
+	}
+
+	public JapaneseAnalyzer getJapaneseAnalyzer() {
+		return japaneseAnalyzer;
+	}
+
+	public void setJapaneseAnalyzer(JapaneseAnalyzer japaneseAnalyzer) {
+		this.japaneseAnalyzer = japaneseAnalyzer;
+	}
+
+	public CJKAnalyzer getCjkAnalyzer() {
+		return cjkAnalyzer;
+	}
+
+	public void setCjkAnalyzer(CJKAnalyzer cjkAnalyzer) {
+		this.cjkAnalyzer = cjkAnalyzer;
+	}
+
+	public StandardAnalyzer getStandardAnalyzer() {
+		return standardAnalyzer;
+	}
+
+	public void setStandardAnalyzer(StandardAnalyzer standardAnalyzer) {
+		this.standardAnalyzer = standardAnalyzer;
 	}
 
 }

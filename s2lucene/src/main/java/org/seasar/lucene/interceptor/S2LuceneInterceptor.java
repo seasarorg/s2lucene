@@ -18,29 +18,21 @@ import org.seasar.lucene.operation.WriteDocumentOperation;
 
 public class S2LuceneInterceptor extends AbstractInterceptor {
 
-	@Binding(bindingType = BindingType.MUST)
-	public DirectoryAccessor directoryAccessor;
+	private DirectoryAccessor directoryAccessor;
 
-	@Binding(bindingType = BindingType.MUST)
-	public DeleteDocumentOperation deleteOperation;
+	private DeleteDocumentOperation deleteOperation;
 
-	@Binding(bindingType = BindingType.MUST)
-	public WriteDocumentOperation writeOperation;
+	private WriteDocumentOperation writeOperation;
 
-	@Binding(bindingType = BindingType.MUST)
-	public SearchDocumentOperation searchOperation;
+	private SearchDocumentOperation searchOperation;
 
-	@Binding(bindingType = BindingType.MUST)
-	public String createMethodSuffix;
+	private String createMethodSuffix;
 
-	@Binding(bindingType = BindingType.MUST)
-	public String updateMethodSuffix;
+	private String updateMethodSuffix;
 
-	@Binding(bindingType = BindingType.MUST)
-	public String deleteMethodSuffix;
+	private String deleteMethodSuffix;
 
-	@Binding(bindingType = BindingType.MUST)
-	public String searchMethodSuffix;
+	private String searchMethodSuffix;
 
 	private void createMethod(List<LuceneDtoMetaData> metaDatas, Object targetData) {
 		writeOperation.writeDocument(metaDatas, targetData, false);
@@ -83,6 +75,70 @@ public class S2LuceneInterceptor extends AbstractInterceptor {
 		}
 		directoryAccessor.close();
 		return retValue;
+	}
+
+	public DirectoryAccessor getDirectoryAccessor() {
+		return directoryAccessor;
+	}
+
+	public void setDirectoryAccessor(DirectoryAccessor directoryAccessor) {
+		this.directoryAccessor = directoryAccessor;
+	}
+
+	public DeleteDocumentOperation getDeleteOperation() {
+		return deleteOperation;
+	}
+
+	public void setDeleteOperation(DeleteDocumentOperation deleteOperation) {
+		this.deleteOperation = deleteOperation;
+	}
+
+	public WriteDocumentOperation getWriteOperation() {
+		return writeOperation;
+	}
+
+	public void setWriteOperation(WriteDocumentOperation writeOperation) {
+		this.writeOperation = writeOperation;
+	}
+
+	public SearchDocumentOperation getSearchOperation() {
+		return searchOperation;
+	}
+
+	public void setSearchOperation(SearchDocumentOperation searchOperation) {
+		this.searchOperation = searchOperation;
+	}
+
+	public String getCreateMethodSuffix() {
+		return createMethodSuffix;
+	}
+
+	public void setCreateMethodSuffix(String createMethodSuffix) {
+		this.createMethodSuffix = createMethodSuffix;
+	}
+
+	public String getUpdateMethodSuffix() {
+		return updateMethodSuffix;
+	}
+
+	public void setUpdateMethodSuffix(String updateMethodSuffix) {
+		this.updateMethodSuffix = updateMethodSuffix;
+	}
+
+	public String getDeleteMethodSuffix() {
+		return deleteMethodSuffix;
+	}
+
+	public void setDeleteMethodSuffix(String deleteMethodSuffix) {
+		this.deleteMethodSuffix = deleteMethodSuffix;
+	}
+
+	public String getSearchMethodSuffix() {
+		return searchMethodSuffix;
+	}
+
+	public void setSearchMethodSuffix(String searchMethodSuffix) {
+		this.searchMethodSuffix = searchMethodSuffix;
 	}
 
 }
